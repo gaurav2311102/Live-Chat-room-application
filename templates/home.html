@@ -1,0 +1,43 @@
+{% extends "base.html" %} 
+{% block content %}
+
+
+<div class="home_container">
+    <aside class = 'left-sidebar'>
+        <h4>Browse Topics</h4>
+        <hr>
+        <div>
+            <a href="{% url "home" %}" class ="topic-list">All</a>
+        </div>
+        <div class="topic-list">
+        {% for topic in topics  %}
+            <div>
+        <a href="{% url "home" %}?q={{topic.name}} ">{{topic.name}}</a>
+            </div>
+        {% endfor %}
+        </div>
+    </aside>
+
+    <main class ="room-box">
+    
+        <h4>{{room_count}} rooms available.</h4>
+        <hr>
+        {% for room in rooms %}
+            <span>by - @{{ room.host.username }}</span>
+            <p>{{ room.id }} - <a href="{% url "room" room.id %}">{{ room.name }}</a></p>
+            <div>
+                <span>Topics - </span>
+                {% for topic in room.topics.all  %}
+                <span>{{topic}} </span>
+                {% endfor %}
+            </div>
+            
+            <p><small>Updated on - {{ room.updated }}</small></p>
+            <hr>
+        {% endfor %}
+    </main>
+
+   
+</div>
+
+{% endblock content %}

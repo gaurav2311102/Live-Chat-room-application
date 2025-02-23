@@ -1,0 +1,17 @@
+.home_container {
+    display: grid;
+    grid-template-columns: 1fr 3fr; 
+    gap: 20px;
+}
+
+.topic-list{
+    margin-left: 20px;
+    
+}
+
+.room_container {
+    display: grid;
+    grid-template-columns: 3fr 1fr; 
+    gap: 20px;
+    padding: 20px;
+}
