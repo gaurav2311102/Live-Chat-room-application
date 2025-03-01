@@ -1,21 +1,22 @@
-{% extends "base.html" %} 
+{% include "base.html" %}
+
 {% block content %}
 
+<div class="profile-container">
 
-<div class="home-container">
     <aside class = 'left-sidebar'>
         {% include "topics_component.html" %}
     </aside>
 
-    <main class ="main-feed">
-        <h4>{{room_count}} rooms available.</h4>
+    <main class = 'main-feed'>
+        <h1>{{user.username|capfirst}}</h1>
         {% include "main_feed_component.html" %}
     </main>
 
     <aside class = "right_sidebar">
         {% include "activity_component.html" %}
     </aside>
-   
-</div>
 
+</div>
 {% endblock content %}
+

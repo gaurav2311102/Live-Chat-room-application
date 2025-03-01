@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
-
+from django.core.paginator import Paginator
 # Create your views here.
 class SignupCreteView(CreateView):
     model = User
@@ -43,13 +43,39 @@ def UserLogin(request):
         
     return render(request,'login_page.html')
 
+@login_required
+def user_profile(request,pk):
+    user = get_object_or_404(User,id=pk)
+    rooms = user.joined_rooms.all()
+    chat_messages = user.message_set.all()
+    topics = Topic.objects.all()
+    
+    page = request.GET.get('page',1)
+    paginator = Paginator(rooms,5)
+    try:
+        rooms = paginator.page(page)
+    except:
+        rooms = paginator.page(1)
+    
+    context = {'user':user,'rooms':rooms,'chat_messages':chat_messages,'topics':topics}
+    return render(request,'user_profile.html',context)  
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ""
     rooms = Room.objects.prefetch_related('topics').filter(Q(topics__name__icontains=q) | Q(name__icontains =q ) | Q(description__icontains = q)).distinct()
     room_count = rooms.count()
     topics = Topic.objects.all()
-    context = {'rooms':rooms,'topics':topics,'room_count':room_count}
+    chat_messages = Message.objects.filter(Q(room__name__icontains = q))[:5]
+    
+    
+    page = request.GET.get('page',1)
+    paginator = Paginator(rooms,5)
+    try:
+        rooms = paginator.page(page)
+    except:
+        rooms = paginator.page(1)
+        
+    context = {'rooms':rooms,'topics':topics,'room_count':room_count,'chat_messages':chat_messages}
     return render(request , 'home.html',context)
 
 
@@ -57,7 +83,7 @@ def home(request):
 def room(request,pk):
     room = get_object_or_404(Room,pk = pk)
     participant_count = room.participants.all().count()
-    messages = room.message_set.all().order_by('-created')
+    messages = room.message_set.all()
     is_member = Membership.objects.filter(user=request.user , room=room).exists() if request.user.is_authenticated else False
     
     return render(request,'room.html',{'room':room,'messages':messages,'is_member':is_member,'participant_count':participant_count})
@@ -78,7 +104,9 @@ class RoomCreateView(LoginRequiredMixin,CreateView  ):
     
     def form_valid(self, form):
         form.instance.host = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        Membership.objects.create(user = self.request.user , room = self.object)
+        return response
     
     def get_success_url(self):
         return reverse_lazy('room',kwargs ={'pk': self.object.pk})
@@ -99,7 +127,7 @@ class RoomDeleteView(UserPassesTestMixin ,DeleteView ):
         return context
     
     def test_func(self):
-        room = self.get_object
+        room = self.get_object()
         return self.request.user == room.host or self.request.user.is_superuser
     
     def handle_no_permission(self):

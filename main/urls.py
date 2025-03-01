@@ -7,6 +7,7 @@ urlpatterns = [
      path('login',views.UserLogin,name='login'),
      path('signup',views.SignupCreteView.as_view(),name="signup"),
      path("logout/", LogoutView.as_view(), name="logout"),
+     path('user-profile/<int:pk>',views.user_profile,name='user-profile'),
      path('room/<int:pk>/',views.room,name='room'),
      path('create-room',views.RoomCreateView.as_view(),name = "create-room"),
      path('update-room/<int:pk>',views.UpdateRoom,name='update-room'),

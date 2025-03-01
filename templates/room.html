@@ -5,7 +5,8 @@
     <main>
 
         <h1><b>{{room.name}}</b></h1>
-        <small>Host - @ {{room.host}}</small>
+    
+        <small>Host - <a href="{% url "user-profile" room.host.id %}">@{{room.host}}</a></small>
         <p>{{room.description}}</p>
         <hr>
         {% if user.is_authenticated %}
