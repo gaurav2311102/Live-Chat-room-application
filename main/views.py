@@ -51,7 +51,7 @@ def user_profile(request,pk):
     topics = Topic.objects.all()
     
     page = request.GET.get('page',1)
-    paginator = Paginator(rooms,5)
+    paginator = Paginator(rooms,3)
     try:
         rooms = paginator.page(page)
     except:
@@ -65,11 +65,11 @@ def home(request):
     rooms = Room.objects.prefetch_related('topics').filter(Q(topics__name__icontains=q) | Q(name__icontains =q ) | Q(description__icontains = q)).distinct()
     room_count = rooms.count()
     topics = Topic.objects.all()
-    chat_messages = Message.objects.filter(Q(room__name__icontains = q))[:5]
+    chat_messages = Message.objects.filter(Q(room__name__icontains = q))
     
     
     page = request.GET.get('page',1)
-    paginator = Paginator(rooms,5)
+    paginator = Paginator(rooms,3)
     try:
         rooms = paginator.page(page)
     except:
@@ -122,7 +122,7 @@ class RoomDeleteView(UserPassesTestMixin ,DeleteView ):
     def get_context_data(self, **kwargs):
         room_id = self.object.id
         context = super().get_context_data(**kwargs)
-        context["obj"] = "delete"
+        context["obj"] = "room"
         context['room_id'] = room_id 
         return context
     

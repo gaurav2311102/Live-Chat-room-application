@@ -2,10 +2,14 @@
 
 {% block content  %}
 
-<h5>update message</h5>
-<form  method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type=submit>update</button>
-</form>
+<div class="message-update-container">
+    <h5>Update Message</h5>
+    <form  method="POST">
+        {% csrf_token %}
+        <label class="form-label">Text:</label>
+        {{ form.text }}
+        <button type=submit class='msg-update-btn'>update</button>
+    </form>
+
+</div>
 {% endblock content  %}

@@ -1,90 +1,115 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div class='room_container'>
     <main>
+        <div style="display:  flex; justify-content: space-between; align-items: center;">
 
-        <h1><b>{{room.name}}</b></h1>
-    
-        <small>Host - <a href="{% url "user-profile" room.host.id %}">@{{room.host}}</a></small>
-        <p>{{room.description}}</p>
+            <span>
+                <span style="font-size:50px; font-weight:bold; margin-right:10px;">{{room.name}}</span>
+                {% if request.user == room.host %}
+
+                    <span style="font-size:30px;" >
+                        <a href="{% url "update-room" room.id %}"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'delete-room' room.id %}" class="delete-icon"><i class="bi bi-trash"></i></i></a>
+                    </span>
+
+                {% elif request.user.is_superuser %}
+                    <span style="font-size:30px;">
+                        <a href="{% url 'delete-room' room.id %}" class="delete-icon"><i class="bi bi-trash"></i></i></a>
+                    </span>
+
+                {% endif %}
+            </span>
+            <span >
+                {% if user.is_authenticated %}
+                    {% if is_member %}
+
+                        <form action="{% url "leave-room" room.id %}" method='POST'>
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger" > Leave </button>
+                        </form>
+                    
+                
+                    {% else %}
+
+                        <form action="{% url "join-room" room.id %}" method="POST">
+                            {% csrf_token %}
+                            <span><button type='submit' class="btn btn-success">Join</button></span>
+                        </form>
+
+                    {% endif %}
+                {% endif %}
+            </span>
+
+        </div>
+        <p style="margin-botton:2px;"><b>HOSTED BY - </b><a href="{% url "user-profile" room.host.id %}">@{{room.host}}</a></p>
+      
+        <p><b>"</b>{{room.description}}<b>"</b></p>
+
         <hr>
         {% if user.is_authenticated %}
 
             {% if is_member %}
+                <div class="message-container">
 
-            <form action="{% url "leave-room" room.id %}" method='POST'>
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger"> Leave </button>
-            </form>
-            <div>
-                {% for message in messages %}
-                <p>{{message.text}} - @<strong>{{message.user}}</strong> {{message.updated|timesince}} ago</p>
+                    <div class="message-container-top">
+                        {% for message in messages   %}
 
-                {% if request.user == message.user %}
+                            <div class="message-box">
 
-                    <div style="display: flex; gap: 30px;">
-                    <a href="{% url "update-message" message.id%}"><i class="fas fa-edit"></i></a>
-                    <a href="{% url "delete-message" message.id %}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                <div class="message-content">
+                                    <p>
+                                        "{{ message.text }}" 
+                                        <small>- @<strong>{{ message.user }}</strong> ({{ message.updated|timesince }} ago)</small>
+                                    </p>
+                                </div>
+
+                                <div class="message-modify">
+                                    {% if request.user == message.user or request.user.is_superuser %}
+                                        <div class="message-actions">
+                                            {% if request.user == message.user %}
+                                                <a href="{% url 'update-message' message.id %}" class="edit-icon"><i class="fas fa-edit"></i></a>
+                                            {% endif %}
+                                            <a href="{% url 'delete-message' message.id %}" class="delete-icon"><i class="bi bi-trash"></i></a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
                     </div>
 
-                {% else %}
+                    <div class="message-container-bottom">
+                        <form action="{% url "create_message"%}" method='POST'>
+                            {% csrf_token %}
+                            <input type="hidden" name="room_id" value="{{ room.id }}">
+                            <input type="text" name='text' placeholder='Send message' required='True' class="message-input">
+                            <button type ='submit' class="message-send-button">Send</button>
+                        </form>
+                    </div>
 
-                        {% if request.user.is_superuser %}
-
-                        <a href="{% url "delete-message" message.id %}"><i class="fa fa-trash" aria-hidden="true"></i></a>
-
-                        {% endif %}
-                    
-                {% endif %}
-
-                {% endfor %}
                 </div>
-                <hr>
-
-                <div>
-                <form action="{% url "create_message"%}" method='POST'>
-                    {% csrf_token %}
-                    <input type="hidden" name="room_id" value="{{ room.id }}">
-                    <input type="text" name='text' placeholder='Send message' required='True'>
-                    <button type ='submit'>Send</button>
-                </form>
-                </div>
-                <hr>
-
-                {% if request.user == room.host or request.user.is_superuser %}
-
-                <div style="display: flex; gap: 30px;">
-                <a href="{% url "update-room" room.id %}">Modify room</a>
-                <a href="{% url 'delete-room' room.id %}" class="btn btn-danger">Delete</a>
-                </div>
-
-                {% endif %}
-
-            {% else %}
-
-                <form action="{% url "join-room" room.id %}" method="POST">
-                    {% csrf_token %}
-                    <span>To see room content <button type='submit' class="btn btn-success">Join</button></span>
-                </form>
-
                 
-            {% endif %}
+        
+            {% endif %}          
 
         {% else %}
 
-        <p><a href="{% url "login" %}">Login</a> to join group</p>
+        <p class="login-from-room"><a href="{% url "login" %}" style="margin-right:6px;">Login </a>to join group</p>
 
         {% endif %}
 
     </main> 
 
-    <aside>
+    <aside class="paricipants-container">
         
         <h4>Participants (<small>{{participant_count}}</small>)</h4> 
         <ul>
             {% for participant in room.participants.all  %}
-            <li>{{participant.username}}</li>
+            <li><a href="{% url "user-profile" participant.id %}">{{participant.username}}</a></li>
             {% endfor %}
          </ul>
     </aside>

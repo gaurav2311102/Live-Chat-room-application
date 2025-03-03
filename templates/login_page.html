@@ -1,17 +1,27 @@
 {% extends "base.html" %}
 
+
 {% block content %}
+
+
+<div class="login-container">
+<div class="login-box">
 <h6>Enter credentials to login</h6>
 <form method="POST">
     {% csrf_token %}
-    <label >Username:</label>
+    <label class="form-label"  >Username:</label>
     <p><input type="text" name="username" placeholder="Enter username" required></p>
-    <label >Password:</label>
+    <label class="form-label" >Password:</label>
     <p><input type="password" name= "password", placeholder="Enter password" required></p>
     <button type="submit">Login</button>
     <p>Not a user ? <a href="{% url "signup" %}" >Signup</a> here</p>
 </form>
 {% for message in messages %}
-    <p>{{ message }}</p>
+    <p style="color:red;">{{ message }}</p>
 {% endfor %}
+</div>
+
+</div>
+
+
 {% endblock content %}

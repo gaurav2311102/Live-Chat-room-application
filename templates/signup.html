@@ -1,16 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>Signup here</h3>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type=submit>Signup</button>
-    <p>already a user ?<a href="{% url "login" %}"> signin</a> </p>
-</form>
-<br>
-{% if form.errors.email %}
-    <div class="alert alert-danger">
-        {{ form.errors.email.0 }}
+
+<div class="signup-container">
+    <div class="signup-box">
+
+
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type=submit>Signup</button>
+            <p>already a user ?<a href="{% url "login" %}"> signin</a> </p>
+        </form>
+        <br>
+        {% if form.errors.email %}
+            <div class="alert alert-danger">
+                {{ form.errors.email.0 }}
+            </div>
+        {% endif %}
+
     </div>
-{% endif %}
+</div>
+
 {% endblock content %}

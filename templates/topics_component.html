@@ -6,17 +6,19 @@
     <title>Document</title>
 </head>
 <body>
-    <h4>Browse Topics</h4>
+    <div class="topic-container">
+    <h4 class='headings'>Browse Topics</h4>
         <hr>
         <div>
-            <a href="{% url "home" %}" class ="topic-list">All</a>
+            <a href="{% url "home" %}" class ="topic-list"><b>All</b></a>
         </div>
         <div class="topic-list">
         {% for topic in topics  %}
             <div>
-        <a href="{% url "home" %}?q={{topic.name}} ">{{topic.name}}</a>
+        <a href="{% url "home" %}?q={{topic.name}} "><b>{{topic.name}}</b></a>
             </div>
         {% endfor %}
         </div>
+    </div>
 </body>
 </html>

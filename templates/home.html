@@ -8,7 +8,15 @@
     </aside>
 
     <main class ="main-feed">
-        <h4>{{room_count}} rooms available.</h4>
+        <div class="center-container">
+            <form action={% url "home" %} method="GET"  > 
+                <input class="search-box" type="search" name="q" placeholder="Search rooms..." aria-label="Search">
+                <button class="search-button" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+            
+        </div>
+        <div>
+        <h6 style="margin-left:200px;">{{room_count}} chat rooms available.</h6>
         {% include "main_feed_component.html" %}
     </main>
 
