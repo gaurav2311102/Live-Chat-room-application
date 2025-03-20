@@ -9,7 +9,11 @@
     </aside>
 
     <main class = 'main-feed'>
-        <h1>{{user.username|capfirst}}</h1>
+
+        <div class="profile-detail-container">
+        <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture"  class="profile-pic">
+        <h6>{{user.username|capfirst}}</h6>
+        </div>
         {% include "main_feed_component.html" %}
     </main>
 

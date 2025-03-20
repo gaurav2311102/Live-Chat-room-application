@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from django import forms
-from .models import Room, Topic
+from .models import Room, Topic, Profile
 
 class RoomForm(forms.ModelForm):
     topics = forms.ModelMultipleChoiceField(
@@ -24,10 +24,11 @@ class RoomForm(forms.ModelForm):
         
 class CreateUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
+    profile_picture = forms.ImageField(required=False)
     
     class Meta:
         model = User
-        fields = ['username','email','password1',"password2"]
+        fields = ['profile_picture','username','email','password1',"password2"]
         
     def clean_email(self):
             email = self.cleaned_data.get("email")
@@ -35,6 +36,16 @@ class CreateUserForm(UserCreationForm):
                 raise forms.ValidationError('Email already exists')
             
             return email
+        
+    def save(self, commit=True):
+        user = super().save(commit=False)  
+        if commit:
+            user.save()  
+            if 'profile_picture' in self.cleaned_data:
+                profile = Profile.objects.get(user=user)
+                profile.profile_picture = self.cleaned_data['profile_picture']
+                profile.save()  
+        return user
         
 class UpdateMessageForm(forms.ModelForm):
     class Meta:

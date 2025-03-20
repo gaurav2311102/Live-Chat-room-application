@@ -7,7 +7,7 @@
         <form method="POST">
             {% csrf_token %}
             {% if obj == 'message' %}
-            <p> <b> " </b>{{message.text}}<b> " </b></p>
+            <p> <b> " </b>{{message.text|truncatewords:20}}<b> " </b></p>
             {% endif %}
             <hr>
     </div>

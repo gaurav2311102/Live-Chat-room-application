@@ -7,11 +7,11 @@
 </head>
 <body>
     <div class='activity-container'>
-    <h4>Recent activities</h4>
+    <h4 class="headings">Recent activities</h4>
         <hr>
         {% for message in chat_messages  %}
         <div>
-            <a href="{% url "user-profile" message.user.id %}"><small><b>@{{message.user}}</b></a>  ({{message.updated|timesince}}) ago</small>
+            <a href="{% url "user-profile" message.user.id %}" class="user-name"><small><b>@{{message.user}}</b></a>  ({{message.updated|timesince}}) ago</small>
             <small>replied to "{{message.room}}"</small>
             <p style="margin-top: 10px;">"{{message}}"</p>
             {% if request.user == message.user or request.user.is_superuser%}

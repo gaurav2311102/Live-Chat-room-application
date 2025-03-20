@@ -11,7 +11,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-# Create your views here.
+
+
+
 class SignupCreteView(CreateView):
     model = User
     template_name ="signup.html"
@@ -49,7 +51,7 @@ def user_profile(request,pk):
     rooms = user.joined_rooms.all()
     chat_messages = user.message_set.all()
     topics = Topic.objects.all()
-    
+   
     page = request.GET.get('page',1)
     paginator = Paginator(rooms,3)
     try:
@@ -65,7 +67,7 @@ def home(request):
     rooms = Room.objects.prefetch_related('topics').filter(Q(topics__name__icontains=q) | Q(name__icontains =q ) | Q(description__icontains = q)).distinct()
     room_count = rooms.count()
     topics = Topic.objects.all()
-    chat_messages = Message.objects.filter(Q(room__name__icontains = q))
+    chat_messages = Message.objects.filter(Q(room__name__icontains = q)).order_by('-updated','-created')
     
     
     page = request.GET.get('page',1)
@@ -75,7 +77,7 @@ def home(request):
     except:
         rooms = paginator.page(1)
         
-    context = {'rooms':rooms,'topics':topics,'room_count':room_count,'chat_messages':chat_messages}
+    context = {'rooms':rooms,'topics':topics,'room_count':room_count,'chat_messages':chat_messages ,'q':q}
     return render(request , 'home.html',context)
 
 
@@ -83,10 +85,9 @@ def home(request):
 def room(request,pk):
     room = get_object_or_404(Room,pk = pk)
     participant_count = room.participants.all().count()
-    messages = room.message_set.all()
     is_member = Membership.objects.filter(user=request.user , room=room).exists() if request.user.is_authenticated else False
     
-    return render(request,'room.html',{'room':room,'messages':messages,'is_member':is_member,'participant_count':participant_count})
+    return render(request,'room.html',{'room':room,'is_member':is_member,'participant_count':participant_count})
 
 
 
@@ -151,27 +152,27 @@ def UpdateRoom(request,pk):
             return redirect('room',pk=room.id)
         
     else:
-        page_title = "Modify your room here" 
+        page_title = "Modify your room" 
         context = {"form":form ,"page_title":page_title,"page_type":"update"} 
         return render(request,'room_create.html',context)
     
 
     
-@login_required   
-def create_message(request):
+# @login_required   
+# def create_message(request):
     
-    if request.method == "POST":
-        room_id = request.POST.get('room_id')
-        user = request.user
-        text = request.POST.get('text')
-        room = get_object_or_404(Room,id=room_id)
+#     if request.method == "POST":
+#         room_id = request.POST.get('room_id')
+#         user = request.user
+#         text = request.POST.get('text')
+#         room = get_object_or_404(Room,id=room_id)
     
-        if text:
-            Message.objects.create(user=user,room=room,text=text)
-            return redirect('room',pk = room_id)
+#         if text:
+#             Message.objects.create(user=user,room=room,text=text)
+#             return redirect('room',pk = room_id)
         
-    else:
-        return redirect('home')
+#     else:
+#         return redirect('home')
     
     
 @login_required
@@ -235,3 +236,4 @@ def leave_room(request,pk):
         
 
     return redirect('room',pk=pk)
+

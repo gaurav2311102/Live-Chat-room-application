@@ -18,7 +18,7 @@ class Room(models.Model):
     participants = models.ManyToManyField(User,related_name='joined_rooms',through='Membership') 
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    
+ 
     class Meta():
         ordering = ['-updated','-created']
         
@@ -33,8 +33,7 @@ class Message(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True) 
     
-    class Meta():
-        ordering = ['-updated','-created']
+    
     
     def __str__(self):
         return self.text[:50]
@@ -51,3 +50,10 @@ class Membership(models.Model):
         
     def __str__(self):
         return f'{self.user.username} in group{self.room.name}'
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    profile_pic = models.ImageField(upload_to='profile_images/',default='profile_images/default.jpg' , blank=True,null=True)
+    
+    def __str__(self):
+        return self.user.username

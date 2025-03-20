@@ -9,13 +9,15 @@
     <div class="topic-container">
     <h4 class='headings'>Browse Topics</h4>
         <hr>
-        <div>
-            <a href="{% url "home" %}" class ="topic-list"><b>All</b></a>
+        <div class="topic-list">
+            <div class="topic-box">
+                <a href="{% url "home" %}"  > <b>All</b></a>
+            </div>
         </div>
         <div class="topic-list">
         {% for topic in topics  %}
-            <div>
-        <a href="{% url "home" %}?q={{topic.name}} "><b>{{topic.name}}</b></a>
+            <div class="topic-box" >
+                <a href="{% url "home" %}?q={{topic.name}} " ><b>{{topic.name}}</b></a>
             </div>
         {% endfor %}
         </div>

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
 
 <div class='room_container'>
     <main>
         <div style="display:  flex; justify-content: space-between; align-items: center;">
 
-            <span>
+            <p>
                 <span style="font-size:50px; font-weight:bold; margin-right:10px;">{{room.name}}</span>
                 {% if request.user == room.host %}
 
@@ -21,7 +21,7 @@
                     </span>
 
                 {% endif %}
-            </span>
+            </p>
             <span >
                 {% if user.is_authenticated %}
                     {% if is_member %}
@@ -44,9 +44,10 @@
             </span>
 
         </div>
+        
         <p style="margin-botton:2px;"><b>HOSTED BY - </b><a href="{% url "user-profile" room.host.id %}">@{{room.host}}</a></p>
       
-        <p><b>"</b>{{room.description}}<b>"</b></p>
+        <p class="room-desc"><b>"</b>{{room.description}}<b>"</b></p>
 
         <hr>
         {% if user.is_authenticated %}
@@ -55,38 +56,18 @@
                 <div class="message-container">
 
                     <div class="message-container-top">
-                        {% for message in messages   %}
+                        
 
-                            <div class="message-box">
-
-                                <div class="message-content">
-                                    <p>
-                                        "{{ message.text }}" 
-                                        <small>- @<strong>{{ message.user }}</strong> ({{ message.updated|timesince }} ago)</small>
-                                    </p>
-                                </div>
-
-                                <div class="message-modify">
-                                    {% if request.user == message.user or request.user.is_superuser %}
-                                        <div class="message-actions">
-                                            {% if request.user == message.user %}
-                                                <a href="{% url 'update-message' message.id %}" class="edit-icon"><i class="fas fa-edit"></i></a>
-                                            {% endif %}
-                                            <a href="{% url 'delete-message' message.id %}" class="delete-icon"><i class="bi bi-trash"></i></a>
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                            </div>
-
-                        {% endfor %}
                     </div>
 
                     <div class="message-container-bottom">
-                        <form action="{% url "create_message"%}" method='POST'>
+
+                        
+                        <form  id = "message-form">
+                        
                             {% csrf_token %}
-                            <input type="hidden" name="room_id" value="{{ room.id }}">
-                            <input type="text" name='text' placeholder='Send message' required='True' class="message-input">
+                            
+                            <input type="text" name='text' placeholder='Send message' required='True' class="message-input" id = "message-input">
                             <button type ='submit' class="message-send-button">Send</button>
                         </form>
                     </div>
@@ -115,5 +96,14 @@
     </aside>
 
 </div>
+
+{{room.name|json_script:'room-name'}}
+
+{{request.user.username|json_script:'logged-user'}}
+
+{% if is_member %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endif %}
+
 {% endblock content %}
 
