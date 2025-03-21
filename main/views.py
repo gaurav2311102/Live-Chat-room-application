@@ -220,7 +220,7 @@ def join_room(request,pk):
     room = get_object_or_404(Room, id=pk)
     
     if Membership.objects.filter(user = request.user , room=room).exists():
-        pass
+        return redirect('room',pk=pk)
     else:
         Membership.objects.create(user = request.user , room=room)
         

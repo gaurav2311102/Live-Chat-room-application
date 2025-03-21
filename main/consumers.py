@@ -48,8 +48,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
        
         message_id,message_updated = await self.save_message(user, message)
-        print("message_updated " ,message_updated)
-        
+    
         await self.channel_layer.group_send(
             self.room_group_name,
             {

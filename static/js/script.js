@@ -18,9 +18,6 @@ ws.onmessage =  function(event){
         
     var data = JSON.parse(event.data)
     var is_Admin = data['is_Admin']
-
-    console.log("updated_time... ",(data['updated']))
-
     var messagebox = document.createElement("div")
     if (data.user === currentUser) {
         messagebox.classList.add("message-box-self")
