@@ -64,6 +64,7 @@ ws.onmessage =  function(event){
         deleteLink.href = `/delete-message/${data['msg_id']}/`;  
         deleteLink.classList.add("delete-icon");
         deleteLink.innerHTML = `<i class="bi bi-trash"></i>`;
+        
         actionsDiv.appendChild(deleteLink);
 
         modifyDiv.appendChild(actionsDiv);

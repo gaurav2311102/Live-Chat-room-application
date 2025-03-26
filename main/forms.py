@@ -38,9 +38,11 @@ class CreateUserForm(UserCreationForm):
             return email
         
     def save(self, commit=True):
-        user = super().save(commit=False)  
+        user = super().save(commit=False) 
+        print("commit = " ,commit) 
         if commit:
-            user.save()  
+            user.save()
+            print("user created = ",user)  
             if 'profile_picture' in self.cleaned_data:
                 profile = Profile.objects.get(user=user)
                 profile.profile_picture = self.cleaned_data['profile_picture']

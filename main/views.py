@@ -22,10 +22,18 @@ class SignupCreteView(CreateView):
     
     def form_valid(self, form):
         user = form.save(commit=False)
+    
         user.username = user.username.lower()
         user.save()
         return super().form_valid(form)
     
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            logout(request)
+            redirect('signup') 
+        
+        return super().dispatch(request, *args, **kwargs) 
+
     
 def UserLogin(request):
     
@@ -48,6 +56,7 @@ def UserLogin(request):
 @login_required
 def user_profile(request,pk):
     user = get_object_or_404(User,id=pk)
+   
     rooms = user.joined_rooms.all()
     chat_messages = user.message_set.all()
     topics = Topic.objects.all()
@@ -68,7 +77,7 @@ def home(request):
     room_count = rooms.count()
     topics = Topic.objects.all()
     chat_messages = Message.objects.filter(Q(room__name__icontains = q)).order_by('-updated','-created')
-    
+   
     
     page = request.GET.get('page',1)
     paginator = Paginator(rooms,3)
