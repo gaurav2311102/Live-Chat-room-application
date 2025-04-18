@@ -67,7 +67,7 @@
                         
                             {% csrf_token %}
                             
-                            <input type="text" name='text' placeholder='Send message' required='True' class="message-input" id = "message-input">
+                            <input type="text" name='text' placeholder='Send message' required='True' class="message-input" id="message-input" autocomplete="off" />
                             <button type ='submit' class="message-send-button">Send</button>
                         </form>
                     </div>
@@ -79,7 +79,7 @@
 
         {% else %}
 
-        <p class="login-from-room"><a href="{% url "login" %}" style="margin-right:6px;">Login </a>to join group</p>
+        <p class="login-from-room"><a href="{% url "login" %}" style="margin-right:6px; ">Login </a>to join group</p>
 
         {% endif %}
 

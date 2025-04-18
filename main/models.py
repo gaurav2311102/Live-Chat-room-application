@@ -27,14 +27,14 @@ class Room(models.Model):
     
 class Message(models.Model):
     
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="messages")
     room = models.ForeignKey(Room,on_delete=models.CASCADE)
     text = models.TextField()
     updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True) 
-    
-    
-    
+    created = models.DateTimeField(auto_now_add=True)
+    deleted = models.BooleanField(default=False) 
+    edited = models.BooleanField(default=False) 
+  
     def __str__(self):
         return self.text[:50]
     

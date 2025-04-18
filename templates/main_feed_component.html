@@ -26,7 +26,7 @@
         </div>
     {% endfor %}
 
-    <div>
+    <div class="pagination-option">
         {% if rooms.has_previous %}
             <a href="?page=1&q={{ q }}">First</a>
             <a href="?page={{rooms.previous_page_number}}&q={{ q }}">Previous</a>

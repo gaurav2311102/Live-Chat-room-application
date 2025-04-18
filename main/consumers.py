@@ -7,6 +7,7 @@ from django.utils.timesince import timesince
 import re
 
 
+
 class ChatConsumer(AsyncWebsocketConsumer):
     
     @staticmethod
@@ -32,61 +33,139 @@ class ChatConsumer(AsyncWebsocketConsumer):
         for message in messages:
            
             await self.send(text_data=json.dumps({
+                'type':'message_add',
                 'msg': message['text'],
                 'user': message['user__username'],
                 'msg_id':message['id'],
                 'is_Admin':user.is_superuser,
-                'updated':(timesince(message['updated']) + " ago")
+                'created':(timesince(message['created']) + " ago"),
+                'deleted':message['deleted'],
+                'edited':message['edited']
             }))
         
         
     async def receive(self,text_data):
         data = json.loads(text_data)
-        message = data['msg']
-        
-        user = self.scope['user']  
 
+             
+        if data['type'] == 'send_message':
+            
+            message = data['msg']
+            
+            user = self.scope['user']  
+
+        
+            message_id,message_created,deleted,edited = await self.save_message(user, message)
+        
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'msg': message,
+                    'user': user.username,
+                    'msg_id' : message_id,
+                    'is_Admin':user.is_superuser,
+                    'created':message_created,
+                    'deleted':deleted,
+                    'edited':edited
+                }
+            )
        
-        message_id,message_updated = await self.save_message(user, message)
-    
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'msg': message,
-                'user': user.username,
-                'message_id' : message_id,
-                'is_Admin':user.is_superuser,
-                'updated':message_updated
-            }
-        )
        
+               
+        elif data['type'] == 'delete_message':
+            message_id = data['message_id']
+            await self.delete_message(message_id)
+            
+            # Notify all clients
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'message_delete',
+                    'message_id': message_id,
+                }
+            )
+            
+        elif data['type'] == "update_message":
+            message_id = data["message_id"]
+            new_text = data["new_text"]
+            success = await self.update_message(message_id, new_text)
+            if success:
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        "type": "message_update",
+                        "message_id": message_id,
+                        "new_text": new_text,
+                    }
+                )
+                
+                
     async def chat_message(self,event):
         
          await self.send(text_data=json.dumps({
+            'type':'message_add',
             'msg': event['msg'],
             'user': event['user'],
-            'message_id' : event['message_id'],
+            'msg_id' : event['msg_id'],
             'is_Admin':event['is_Admin'],
-            'updated':str(event['updated'])
+            'created':str(event['created']),
+            'deleted':event['deleted'],
+            'edited':event['edited']
             
             
         }))
     
+    async def message_delete(self, event):
+        message_id = event['message_id']
+        
+        await self.send(text_data=json.dumps({
+            
+            'type': 'message_delete',
+            'msg_id': message_id,
+    }))
+
+
+    async def message_update(self,event):
+        message_id = event['message_id']
+        
+        await self.send(text_data=json.dumps({
+            'type':'message_update',
+            'msg_id': message_id,
+            'new_text':event['new_text']
+            
+        }))
+        
+        
+        
     @sync_to_async
     def save_message(self, user, message):
         
         room = Room.objects.get(name=self.room_name)
         msg_obj = Message.objects.create(room=room, user=user, text=message)
-        return msg_obj.id,timesince(msg_obj.updated)
+        return msg_obj.id,timesince(msg_obj.created),msg_obj.deleted,msg_obj.edited
         
     @sync_to_async
     def get_previous_messages(self):
        
         room = Room.objects.get(name=self.room_name)
-        return list(Message.objects.filter(room=room).order_by( 'created').values('text', 'user__username','id','updated'))
+        return list(Message.objects.filter(room=room).order_by( 'created').values('text', 'user__username','id','created','deleted','edited'))
      
-   
+
+    @sync_to_async
+    def delete_message(self, message_id):
+        message = Message.objects.get(id=message_id)
+        message.deleted = True
+        message.save()
+        
+    @sync_to_async
+    def update_message(self,message_id,new_text):
+        message = Message.objects.get(id=message_id)
+        if message.user == self.scope['user']:
+            message.text =  new_text
+            message.edited = True
+            message.save()  
+            return True 
     
     async def disconnect(self, code):
         print("websocket disconnected...")

@@ -2,25 +2,48 @@
 
 {% block content %}
 
-<div class="profile-container">
 
-    <aside class = 'left-sidebar'>
-        {% include "topics_component.html" %}
-    </aside>
 
-    <main class = 'main-feed'>
+    {% if request.user.is_authenticated and request.user == user  %}
+        <div class="profile-container">
+            <aside class = 'left-sidebar'>
+                {% include "topics_component.html" %}
+            </aside>
 
-        <div class="profile-detail-container">
-        <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture"  class="profile-pic">
-        <h6>{{user.username|capfirst}}</h6>
+            <main class = 'main-feed'>
+
+                <div class="profile-detail-container">
+                <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture"  class="profile-pic">
+                <h6>{{user.username|capfirst}}</h6>
+                </div>
+                {% include "main_feed_component.html" %}
+            </main>
+
+            <aside class = "right_sidebar">
+                {% include "activity_component.html" %}
+            </aside>
         </div>
-        {% include "main_feed_component.html" %}
-    </main>
 
-    <aside class = "right_sidebar">
-        {% include "activity_component.html" %}
-    </aside>
+    {% elif request.user.is_authenticated and request.user != user %}
+        <div class="profile-container">
+            <aside class = 'left-sidebar'>
+                {% include "topics_component.html" %}
+            </aside>
 
-</div>
+            <main class = 'main-feed'>
+                <div class="profile-detail-container">
+                <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture"  class="profile-pic">
+                <h6>{{user.username|capfirst}}</h6>
+                </div>
+                {% include "main_feed_component.html" %}
+            </main>
+        </div>
+
+    {% else %}
+        <div style="display:flex; justify-content:center;">
+        <p style="font-size: x-large;"><a href={% url "login" %}>Login </a>to see details</p>
+        </div>
+    {% endif %}
+
 {% endblock content %}
 

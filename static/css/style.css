@@ -14,10 +14,11 @@ body{
 
 .user-name{
     color: #2a10f0;
+    font-weight: bold;
 }
 .home-container {
     display: grid;
-    grid-template-columns: 0.8fr 2.5fr 1fr; 
+    grid-template-columns: 1fr 4fr ; 
     gap: 20px;
 }
 
@@ -77,6 +78,9 @@ body{
     font-size: 16px;
 }
 
+.search-result{
+    margin-left: 40%;
+}
 
 .search-button {
     background-color: blue;
@@ -95,6 +99,7 @@ body{
 
 .main-feed{
     padding: 5px 15px;
+
 }
 
 
@@ -176,7 +181,7 @@ body{
     border-style : outset;
     border-radius: 15px;
     border-color: black;
-    background-color:#F7F9F7;
+    background-color:#F0F8FF;
 }
 
 .activity-container{
@@ -189,7 +194,22 @@ body{
     border-style : inset;
     border-radius: 15px;
     border-color: black;
-    background-color:#F7F9F7;
+    background-color:#F0F8FF;
+}
+
+.activity-box{
+    background-color: white;
+    padding: 5px 10px 10px 10px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    border-style: groove;
+    border-color: black;
+    
+}
+
+.activity-box-option{
+    display: flex;
+    justify-content: space-between;    
 }
 
 .paricipants-container{
@@ -345,14 +365,13 @@ body{
 }
 .message-box-self {
     display: flex;
-    justify-content: space-between;   
+    flex-direction: column;
+    justify-content:space-between;   
     padding: 10px;
     border-radius: 8px;
     background: #ede9e9;
     margin-bottom: 10px;
     position: relative;
-    display: flex;
-    align-items: center;
     width: 60%; 
     max-width: 800px; 
     word-wrap: break-word;
@@ -362,14 +381,13 @@ body{
 
 .message-box-other {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;   
     padding: 10px;
     border-radius: 8px;
     background: #ede9e9;
     margin-bottom: 10px;
     position: relative;
-    display: flex;
-    align-items: center;
     width: 60%; 
     max-width: 800px; 
     word-wrap: break-word;
@@ -391,6 +409,7 @@ font-size:larger;
 
 .message-time{
     font-size: 13px;
+    text-align: right;
 }
 .message-input {
     width: 85%;
@@ -414,8 +433,14 @@ font-size:larger;
     cursor: pointer;
     color: red;
     margin-left: 5px;
+    border-style: none;
+    
 }
 
+.edit-icon{
+    border-style: none;
+    color : blue
+}
 
 .create-room-container {
     display: flex;
@@ -509,8 +534,16 @@ font-size:larger;
     top: 50%;            
     left: 50%;           
     transform: translate(-50%, -50%);  
-  
+
 }
+
+.login-from-room{
+    display: flex;
+    font-size: larger;
+    font-weight: bold;
+    justify-content: center;
+}
+
 .delete-box{
     
     justify-content: center;
@@ -601,19 +634,23 @@ font-size:larger;
     gap: 15px;
   }
   
-  .nav-links li {
+  .nav-item-to-edit {
     display: inline;
+    margin-top: 10px;
   }
   
-  .nav-links a {
+  .nav-links li a {
     text-decoration: none;
     color: white;
     padding: 8px 12px;
+    transition: font-weight 0.2s ease;
   }
   
+  #nav-logout-button{
+    margin-top: 5px;
+  }
 
-
-  .nav-links a:hover {
+  .nav-links li a:hover {
     font-weight: bold;
   }
   
@@ -658,9 +695,9 @@ font-size:larger;
   display: flex;
   flex-direction: column;  
   align-items: center;
-   
-}
+  
 
+}
 
 .profile-pic{
     width: 100px;  
@@ -677,5 +714,45 @@ font-size:larger;
     height: 40px;
     border-radius: 100%;  
     object-fit: cover; 
+    margin-top: 5px;
     border: 3px solid #ddd; 
+    transition: transform 0.3s ease-in-out;
+}
+
+.navbar-profile-pic:hover{
+    transform: scale(1.2);
+}
+
+.Admin:hover{
+    color: lightgreen;
+}
+
+.pagination-option{
+    display: flex;
+    justify-content: center;
+}
+.pagination-option > * {
+    padding: 10px;
+  }
+
+.deleted-or-edited-message {
+    color: #656262;
+    font-style: italic;
+}
+
+.message-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+   
+}
+
+.modify-div-container{
+    display: flex;
+    justify-content: right;
+    align-items: end;
+}
+
+.message-title{
+    color: blue;
 }

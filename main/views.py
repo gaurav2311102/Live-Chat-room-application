@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse
 from .models import Room,Topic,Message,Membership
@@ -11,7 +12,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 
 class SignupCreteView(CreateView):
@@ -53,14 +55,16 @@ def UserLogin(request):
         
     return render(request,'login_page.html')
 
-@login_required
+# @login_required
 def user_profile(request,pk):
+    
+    # if request.user.is_authenticated:
     user = get_object_or_404(User,id=pk)
-   
+
     rooms = user.joined_rooms.all()
-    chat_messages = user.message_set.all()
+    chat_messages = user.messages.filter(deleted = False).order_by('-updated','-created')
     topics = Topic.objects.all()
-   
+
     page = request.GET.get('page',1)
     paginator = Paginator(rooms,3)
     try:
@@ -69,14 +73,16 @@ def user_profile(request,pk):
         rooms = paginator.page(1)
     
     context = {'user':user,'rooms':rooms,'chat_messages':chat_messages,'topics':topics}
-    return render(request,'user_profile.html',context)  
+    return render(request,'user_profile.html',context) 
+    # else:
+    #     return redirect('home') 
 
 def home(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ""
     rooms = Room.objects.prefetch_related('topics').filter(Q(topics__name__icontains=q) | Q(name__icontains =q ) | Q(description__icontains = q)).distinct()
     room_count = rooms.count()
     topics = Topic.objects.all()
-    chat_messages = Message.objects.filter(Q(room__name__icontains = q)).order_by('-updated','-created')
+    chat_messages = Message.objects.all().order_by('-updated','-created')
    
     
     page = request.GET.get('page',1)
@@ -122,7 +128,7 @@ class RoomCreateView(LoginRequiredMixin,CreateView  ):
         return reverse_lazy('room',kwargs ={'pk': self.object.pk})
     
     
-class RoomDeleteView(UserPassesTestMixin ,DeleteView ):
+class RoomDeleteView(LoginRequiredMixin, UserPassesTestMixin ,DeleteView ):
     model = Room
     template_name ='delete.html'
     success_url = reverse_lazy('home')
@@ -148,22 +154,25 @@ class RoomDeleteView(UserPassesTestMixin ,DeleteView ):
 
 @login_required(login_url='login')
 def UpdateRoom(request,pk):
+    
     room = get_object_or_404(Room,pk=pk)
     form = RoomForm(instance=room)
         
-    if request.user != room.host and not request.user.is_superuser :
+    if request.user != room.host :
         return redirect('home')
     
     if request.method == 'POST':
         form = RoomForm(request.POST,instance=room)
+        
         if form.is_valid():
             form.save()
             return redirect('room',pk=room.id)
         
-    else:
-        page_title = "Modify your room" 
-        context = {"form":form ,"page_title":page_title,"page_type":"update"} 
-        return render(request,'room_create.html',context)
+        
+   
+    page_title = "Modify your room" 
+    context = {"form":form ,"page_title":page_title,"page_type":"update"} 
+    return render(request,'room_create.html',context)
     
 
     
@@ -207,6 +216,7 @@ class MessageDeleteView(UserPassesTestMixin,DeleteView):
     model = Message
     template_name = 'delete.html'
     
+    
     def get_context_data(self, **kwargs):
         room_id = self.object.room.id
         context = super().get_context_data(**kwargs)
@@ -219,10 +229,15 @@ class MessageDeleteView(UserPassesTestMixin,DeleteView):
     
     def test_func(self):
         message = self.get_object()
+        
         return self.request.user == message.user or self.request.user.is_superuser
     
     def handle_no_permission(self):
         return reverse_lazy('home')
+    
+   
+    
+    
     
 @login_required
 def join_room(request,pk):

@@ -20,6 +20,13 @@ class RoomForm(forms.ModelForm):
             "name": forms.TextInput(attrs={"placeholder": "Enter room name", "class": "form-control"}),
             "description": forms.Textarea(attrs={"rows": 4, "placeholder": "Enter description", "class": "form-control"}),
         }
+        
+    def clean_topics(self):
+        topics = self.cleaned_data.get('topics')
+        if not topics:
+            raise forms.ValidationError("Please select at least one topic.")
+        return topics
+
 
         
 class CreateUserForm(UserCreationForm):

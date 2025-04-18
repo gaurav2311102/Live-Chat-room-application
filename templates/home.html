@@ -17,14 +17,13 @@
             </form>
             
         </div>
-        <div>
-        <h6 style="margin-left:200px; padding-bottom:8px; font-size:large;">{{room_count}} chat rooms found.</h6>
+        <h6 class="search-result">{{room_count}} chat rooms found.</h6>
         {% include "main_feed_component.html" %}
     </main>
 
-    <aside class = "right_sidebar">
+    {% comment %} <aside class = "right_sidebar">
         {% include "activity_component.html" %}
-    </aside>
+    </aside> {% endcomment %}
    
 </div>
 

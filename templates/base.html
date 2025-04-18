@@ -28,38 +28,38 @@
         <button class="menu-toggle" onclick="toggleMenu()">☰</button>
 
         <ul class="nav-links" id="navLinks">
-          <li><a href="{% url 'home' %}">Home</a></li>
 
-          {% if user.is_authenticated %}
-          <li><a href="{% url 'create-room' %}">Create Room</a></li>
-          {% endif %}
+          <li class="nav-item-to-edit"> <a href="{% url 'home' %}">Home</a></li>
 
-          {% if user.is_authenticated %}
-          
-          <li>
-            <form action="{% url 'logout' %}" method="POST">
-              {% csrf_token %}
-              <button type="submit" class="logout-button">Logout</button>
-            </form>
-          </li>
-          
-          {% if request.user.is_superuser %}
-          <li><a href="{% url 'admin:index' %}"><i class="fa-solid fa-screwdriver-wrench"></i> Admin</a></li>
-          {% endif %}
+            {% if request.user.is_authenticated %}
+              <li class="nav-item-to-edit"><a href="{% url 'create-room' %}">Create Room</a></li>
 
-          <li><img src="{{ request.user.profile.profile_pic.url }}" alt="Profile Picture" class='navbar-profile-pic'><a href="{% url 'user-profile' request.user.id %}" id="username-link">{{request.user.username}}</a></li>
+              {% if request.user.is_superuser %}
+                <li class="nav-item-to-edit"><a href="{% url 'admin:index' %}" class="Admin"><i class="fa-solid fa-screwdriver-wrench "></i> Admin</a></li>
+              {% endif %}
 
-          {% else %}
-          <li>
-            <form action="{% url 'login' %}" method="GET">
-              <button type="submit" class="login-button">Login</button>
-            </form>
-          </li>
-          <li>
-            <form action="{% url 'signup' %}" method="GET">
-              <button type="submit" class="signup-button">Register</button>
-            </form>
-          </li>
+              
+              <li id="nav-logout-button">
+                <form action="{% url 'logout' %}" method="POST">
+                  {% csrf_token %}
+                  <button type="submit" class="logout-button">Logout</button>
+                </form>
+              </li>
+              
+              <li><a href="{% url 'user-profile' request.user.id %}" ><img src="{{ request.user.profile.profile_pic.url }}" alt="Profile Picture" class='navbar-profile-pic'></a></li>
+              
+
+            {% else %}
+              <li>
+                <form action="{% url 'login' %}" method="GET">
+                  <button type="submit" class="login-button">Login</button>
+                </form>
+              </li>
+              <li>
+                <form action="{% url 'signup' %}" method="GET">
+                  <button type="submit" class="signup-button">Register</button>
+                </form>
+              </li>
           {% endif %}
         </ul>
       </div>
