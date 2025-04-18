@@ -144,7 +144,7 @@ ws.onmessage =  function(event){
         const messageElement = document.getElementById(`message-${messageId}`);
         if (messageElement) {
            
-            messageElement.querySelector('.message-text').innerHTML = "<span class='deleted-message'>This message was deleted</span>  ";
+            messageElement.querySelector('.message-text').innerHTML = "<span class='deleted-or-edited-message'>This message was deleted</span>  ";
 
             const deleteIcon = messageElement.querySelector('.delete-icon');
             if (deleteIcon) {
