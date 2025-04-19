@@ -17,8 +17,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["live-chat-room-application-scq0.onrender.com",'127.0.0.1']
-# ALLOWED_HOSTS =[]
+ALLOWED_HOSTS = ["live-chat-room-application-scq0.onrender.com"]
+
 
 
 
