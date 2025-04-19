@@ -3,7 +3,7 @@ services:
     name: live-chat-room
     env: python
     buildCommand: "./manage.py collectstatic --noinput"
-    startCommand: daphne chat_room.asgi:application
+    startCommand: ./start.sh
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: chat_room.settings
