@@ -72,17 +72,21 @@ ASGI_APPLICATION = "chat_room.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-}
+if DATABASE_URL:
+    # This means the DATABASE_URL is set (for Render).
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    }
+else:
+    # This is for local development where no DATABASE_URL is set (uses SQLite).
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',  # SQLite for local dev
+        }
+    }
 
 
 # Password validation
@@ -136,17 +140,29 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-REDIS_URL = os.environ.get("REDIS_URL")
+
+import urllib.parse as urlparse
+
+REDIS_URL = os.environ.get("REDIS_URL")  # Set this only on Render
+REDIS_FOR_LOCAL = ("127.0.0.1", 6379)
+
+if REDIS_URL:
+    url = urlparse.urlparse(REDIS_URL)
+    redis_host = url.hostname
+    redis_port = url.port or 6379
+    redis_location = (redis_host, redis_port)
+else:
+    redis_location = REDIS_FOR_LOCAL
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [REDIS_URL],
-
+            "hosts": [redis_location],
         },
     },
 }
+
 
 LOGOUT_REDIRECT_URL  = 'login'
 
