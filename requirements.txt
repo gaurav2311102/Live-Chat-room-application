@@ -14,3 +14,4 @@ whitenoise
 psycopg2-binary
 dj_database_url
 pillow
+django-extensions
