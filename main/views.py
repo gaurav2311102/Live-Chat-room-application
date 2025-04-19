@@ -271,6 +271,8 @@ from django.contrib.auth.hashers import make_password
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django import forms
+from django.views.decorators.csrf import csrf_exempt
+
 
 User = get_user_model()
 
@@ -279,6 +281,8 @@ class SuperuserForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
 
+
+@csrf_exempt
 def create_superuser_view(request):
     # Prevent multiple superusers
     if User.objects.filter(is_superuser=True).exists():
