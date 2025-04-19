@@ -149,5 +149,5 @@ CHANNEL_LAYERS = {
 
 LOGOUT_REDIRECT_URL  = 'login'
 CSRF_TRUSTED_ORIGINS = [
-    "https://live-chat-room-application-scq0.onrender.com",
+    "https://live-chat-room-application-sr02.onrender.com",
 ]
