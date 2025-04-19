@@ -261,3 +261,40 @@ def leave_room(request,pk):
 
     return redirect('room',pk=pk)
 
+
+
+
+###################################################################################################################################
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django import forms
+
+User = get_user_model()
+
+class SuperuserForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
+def create_superuser_view(request):
+    # Prevent multiple superusers
+    if User.objects.filter(is_superuser=True).exists():
+        return HttpResponse("Superuser already exists.")
+
+    if request.method == 'POST':
+        form = SuperuserForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            User.objects.create_superuser(
+                username=data['username'],
+                email=data['email'],
+                password=data['password']
+            )
+            return HttpResponse("✅ Superuser created successfully!")
+    else:
+        form = SuperuserForm()
+    
+    return render(request, 'create_superuser.html', {'form': form})
