@@ -7,3 +7,5 @@ venv/
 
 # Ignore image files
 media/Gaurav_profile.jpeg
+
+staticfiles/
