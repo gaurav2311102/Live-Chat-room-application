@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: live-chat-room
+    env: python
+    buildCommand: "./manage.py collectstatic --noinput"
+    startCommand: daphne chat_room.asgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: chat_room.settings
+      - key: PORT
+        value: 10000
