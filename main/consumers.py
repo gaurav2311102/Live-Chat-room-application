@@ -1,7 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.exceptions import StopConsumer
 from asgiref.sync import sync_to_async
-from .models import Room,Message
+
 import json
 from django.utils.timesince import timesince
 import re
@@ -16,6 +16,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
       
     async def connect(self):
        
+        from .models import Room,Message
         await self.accept()
         print("websokcet connected...")
         print("channel name..." , self.channel_name)
@@ -140,26 +141,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
     @sync_to_async
     def save_message(self, user, message):
-        
+        from .models import Room,Message
         room = Room.objects.get(name=self.room_name)
         msg_obj = Message.objects.create(room=room, user=user, text=message)
         return msg_obj.id,timesince(msg_obj.created),msg_obj.deleted,msg_obj.edited
         
     @sync_to_async
     def get_previous_messages(self):
-       
+        from .models import Room,Message
         room = Room.objects.get(name=self.room_name)
         return list(Message.objects.filter(room=room).order_by( 'created').values('text', 'user__username','id','created','deleted','edited'))
      
 
     @sync_to_async
     def delete_message(self, message_id):
+        from .models import Room,Message
         message = Message.objects.get(id=message_id)
         message.deleted = True
         message.save()
         
     @sync_to_async
+    
     def update_message(self,message_id,new_text):
+        from .models import Room,Message
         message = Message.objects.get(id=message_id)
         if message.user == self.scope['user']:
             message.text =  new_text
