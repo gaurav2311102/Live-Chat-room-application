@@ -17,7 +17,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["live-chat-room-application-sr02.onrender.com"]
+ALLOWED_HOSTS = ["live-chat-room-application-sr02.onrender.com",'127.0.0.1']
 
 
 
@@ -136,18 +136,22 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+REDIS_URL = os.environ.get("REDIS_URL")
 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379")]
+            "hosts": [REDIS_URL],
 
         },
     },
 }
 
 LOGOUT_REDIRECT_URL  = 'login'
+
 CSRF_TRUSTED_ORIGINS = [
     "https://live-chat-room-application-sr02.onrender.com",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]

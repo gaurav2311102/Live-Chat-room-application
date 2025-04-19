@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth.views import LogoutView
-from main.views import create_superuser_view 
+
 urlpatterns = [
     
     path('',views.home,name = "home"),
@@ -17,9 +17,7 @@ urlpatterns = [
     path('update-message/<int:pk>/',views.update_message,name='update-message'),
     path('delete-message/<int:pk>/',views.MessageDeleteView.as_view(),name='delete-message'),
     path('join-room/<int:pk>',views.join_room,name='join-room'),
-    path('leave-room/<int:pk>',views.leave_room,name='leave-room'),
-    path('create-superuser/', create_superuser_view, name='create-superuser'),
-    
+    path('leave-room/<int:pk>',views.leave_room,name='leave-room'),    
      
  ]
  

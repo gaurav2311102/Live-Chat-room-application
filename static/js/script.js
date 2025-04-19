@@ -1,13 +1,15 @@
 const roomName = JSON.parse(document.getElementById('room-name').textContent)
 const currentUser = JSON.parse(document.getElementById('logged-user').textContent)
 
+const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
 var ws = new WebSocket(
-    'ws://' + 
+    ws_scheme + '://' + 
     window.location.host +  
     '/ws/ac/' + 
     roomName + 
     '/'
 )
+
 
 ws.onopen = function(){
     console.log("websocket connection open...")
