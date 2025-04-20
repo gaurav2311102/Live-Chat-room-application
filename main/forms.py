@@ -43,16 +43,14 @@ class CreateUserForm(UserCreationForm):
                 raise forms.ValidationError('Email already exists')
             
             return email
-     def clean_username(self):
+    def clean_username(self):
         username = self.cleaned_data.get('username')
         return username.lower() if username else username
-        
+    
     def save(self, commit=True):
         user = super().save(commit=False) 
-        print("commit = " ,commit) 
         if commit:
             user.save()
-            print("user created = ",user)  
             if 'profile_picture' in self.cleaned_data:
                 profile = Profile.objects.get(user=user)
                 profile.profile_picture = self.cleaned_data['profile_picture']
