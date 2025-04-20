@@ -43,6 +43,9 @@ class CreateUserForm(UserCreationForm):
                 raise forms.ValidationError('Email already exists')
             
             return email
+     def clean_username(self):
+        username = self.cleaned_data.get('username')
+        return username.lower() if username else username
         
     def save(self, commit=True):
         user = super().save(commit=False) 
