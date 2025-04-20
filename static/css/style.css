@@ -638,8 +638,23 @@ font-size:larger;
     display: inline;
     margin-top: 10px;
   }
+
+  .nav-user-name{
+    display: inline;
+    margin-top: 10px;
+  }
+
+  .nav-user-name a{
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s ease;
+  }
+  .nav-user-name a:hover{
+    color: rgb(76, 76, 233);
+    font-weight: bold;
+  }
   
-  .nav-links li a {
+  .nav-links .nav-item-to-edit a {
     text-decoration: none;
     color: white;
     padding: 8px 12px;
@@ -650,7 +665,7 @@ font-size:larger;
     margin-top: 5px;
   }
 
-  .nav-links li a:hover {
+  .nav-links .nav-item-to-edit a:hover {
     font-weight: bold;
   }
   
