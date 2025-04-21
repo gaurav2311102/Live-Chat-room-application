@@ -148,9 +148,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
     @sync_to_async
     def get_previous_messages(self):
-        from .models import Room,Message
+        from .models import Room,Message,Membership  
+        user = self.scope['user']
         room = Room.objects.get(name=self.room_name)
-        return list(Message.objects.filter(room=room).order_by( 'created').values('text', 'user__username','id','created','deleted','edited'))
+        membership = Membership.objects.get(user = user, room = room)
+         
+        return list(Message.objects.filter(room=room ,created__gt = membership.joined_at ).order_by( 'created').values('text', 'user__username','id','created','deleted','edited'))
      
 
     @sync_to_async

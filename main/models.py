@@ -39,7 +39,7 @@ class Message(models.Model):
         return self.text[:50]
     
 class Membership(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='membership')
     room = models.ForeignKey(Room,on_delete=models.CASCADE)
     joined_at = models.DateTimeField(auto_now_add=True)
     
