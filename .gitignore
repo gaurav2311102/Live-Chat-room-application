@@ -6,6 +6,6 @@ __pycache__/
 venv/
 
 # Ignore image files
-media/Gaurav_profile.jpeg
+media/profile_images/Gaurav_profile.jpeg
 
 staticfiles/

@@ -46,9 +46,15 @@
                 </form>
               </li>
 
+<<<<<<< Updated upstream
               {% comment %} <li><a href="{% url 'user-profile' request.user.id %}" ><img src="{{ request.user.profile.profile_pic.url }}" alt="" class='navbar-profile-pic'></a></li>
      {% endcomment %}
               <li class="nav-user-name"><a href="{% url 'user-profile' request.user.id %}" >{{request.user.username|upper}}</a></li>
+=======
+              <li><a href="{% url 'user-profile' request.user.id %}" ><img src="{{ request.user.profile.profile_pic.url }}" alt="" class='navbar-profile-pic'></a></li>
+    
+              {% comment %} <li class="nav-user-name"><a href="{% url 'user-profile' request.user.id %}" >{{request.user.username|upper}}</a></li>{% endcomment %}
+>>>>>>> Stashed changes
 
             {% else %}
               <li>
