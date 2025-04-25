@@ -23,7 +23,7 @@ A real-time chat room application built with Django and WebSockets. This project
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/chat-room.git
+   git clone https://github.com/gaurav2311102/Live-Chat-room-application.git
    cd chat-room
    ```
 
