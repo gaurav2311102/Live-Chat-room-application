@@ -43,7 +43,7 @@ def UserLogin(request):
         return redirect('home')
     
     if request.method == "POST":
-        username = request.POST.get("username").lower()
+        username = request.POST.get("username").lower().strip()
         password = request.POST.get("password")
         user = authenticate(request, username=username,password=password)
         

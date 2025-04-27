@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ["live-chat-room-application-sr02.onrender.com",'127.0.0.1']
 
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,7 +65,7 @@ TEMPLATES = [
     },
 ]
 
-
+# WSGI_APPLICATION = "chat_room.wsgi.application"
 ASGI_APPLICATION = "chat_room.asgi.application"
 
 
@@ -74,12 +75,12 @@ ASGI_APPLICATION = "chat_room.asgi.application"
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-    
+    # This means the DATABASE_URL is set (for Render).
     DATABASES = {
         'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
     }
 else:
-    
+    # This is for local development where no DATABASE_URL is set (uses SQLite).
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -131,6 +132,7 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 
+# Use Whitenoise
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -141,7 +143,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 import urllib.parse as urlparse
 
-REDIS_URL = os.environ.get("REDIS_URL")  
+REDIS_URL = os.environ.get("REDIS_URL")  # Set this only on Render
 REDIS_FOR_LOCAL = ("127.0.0.1", 6379)
 
 if REDIS_URL:
