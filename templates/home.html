@@ -11,10 +11,10 @@
 
     <main class ="main-feed">
         <div class="center-container">
-            <form action={% url "home" %} method="GET"  > 
-                <input class="search-box" type="search" name="q" placeholder="Search rooms..." aria-label="Search">
-                <button class="search-button" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </form>
+            <form class="search-form" action="{% url 'home' %}" method="GET">
+    <input class="search-box" type="search" name="q" placeholder="Search rooms..." aria-label="Search">
+    <button class="search-button" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+</form>
             
         </div>
         <h6 class="search-result">{{room_count}} chat rooms found.</h6>

@@ -13,12 +13,12 @@
         <div class="room-box">
             <h1 class='headings'><a href="{% url "room" room.id %}" >{{ room.name }}</a></h1>
             <p class="room-desc">"{{room.description|truncatechars:200 }}"</p>
-            <span>Host -<a href="{% url "user-profile" room.host.id %}" class="user-name">@{{ room.host.username }}</a></span>
+            <span class="master-host-span"><span class="host-span">Host</span> <a href="{% url "user-profile" room.host.id %}" class="user-name">{{ room.host.username }}</a></span>
             
-            <div>
-                <span>Topics - </span>
+            <div style="margin-top: 8px;">
+                <span class="topics">Topics </span>
                 {% for topic in room.topics.all  %}
-                <span style="text-decoration: underline;">{{topic}}, </span>
+                <span class="topic-component">{{topic}}</span>
                 {% endfor %}
             </div>
         
@@ -32,7 +32,7 @@
             <a href="?page={{rooms.previous_page_number}}&q={{ q }}">Previous</a>
         {% endif %}
 
-        <span>Page {{rooms.number}} of {{rooms.paginator.num_pages}}</span>
+        <span class="number-pages">Page {{rooms.number}} of {{rooms.paginator.num_pages}}</span>
 
         {% if rooms.has_next %}
             <span><a href="?page={{ rooms.next_page_number }}&q={{ q }}">Next</a></span>

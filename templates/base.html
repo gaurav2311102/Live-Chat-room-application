@@ -46,9 +46,9 @@
                 </form>
               </li>
 
-              {% comment %} <li><a href="{% url 'user-profile' request.user.id %}" ><img src="{{ request.user.profile.profile_pic.url }}" alt="" class='navbar-profile-pic'></a></li> {% endcomment %}
+              <li><a href="{% url 'user-profile' request.user.id %}" ><img src="{{ request.user.profile.profile_pic.url }}" alt="" class='navbar-profile-pic'></a></li>
     
-              <li class="nav-user-name"><a href="{% url 'user-profile' request.user.id %}" >{{request.user.username|upper}}</a></li>
+              {% comment %} <li class="nav-user-name"><a href="{% url 'user-profile' request.user.id %}" >{{request.user.username|upper}}</a></li> {% endcomment %}
 
             {% else %}
               <li>
