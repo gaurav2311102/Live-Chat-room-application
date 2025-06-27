@@ -1,6 +1,7 @@
 import dj_database_url
 from pathlib import Path,os
 from dotenv import load_dotenv
+import urllib.parse as urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,17 +10,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv("DEBUG", "false")
 
-ALLOWED_HOSTS = ["live-chat-room-application-sr02.onrender.com",'127.0.0.1']
-
-
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '65.0.177.27',
+    'chatarena.xyz',
+    'www.chatarena.xyz'
+]
 
 
 # Application definition
@@ -72,21 +76,25 @@ ASGI_APPLICATION = "chat_room.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-if DATABASE_URL:
-    # This means the DATABASE_URL is set (for Render).
-    DATABASES = {
-        'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
-    }
-else:
-    # This is for local development where no DATABASE_URL is set (uses SQLite).
+if os.getenv("DB_ENGINE") == "postgres":
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',  # SQLite for local dev
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv("DB_NAME" ),
+            'USER': os.getenv("DB_USER"),
+            'PASSWORD': os.getenv("DB_PASSWORD"),
+            'HOST': os.getenv("DB_HOST"),
+            'PORT': os.getenv("DB_PORT"),
         }
     }
+    
+else:
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 
 # Password validation
@@ -141,9 +149,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 
-import urllib.parse as urlparse
-
-REDIS_URL = os.environ.get("REDIS_URL")  # Set this only on Render
+REDIS_URL = os.environ.get("REDIS_URL") 
 REDIS_FOR_LOCAL = ("127.0.0.1", 6379)
 
 if REDIS_URL:
@@ -167,7 +173,8 @@ CHANNEL_LAYERS = {
 LOGOUT_REDIRECT_URL  = 'login'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://live-chat-room-application-sr02.onrender.com",
     "http://127.0.0.1:8000",
     "http://localhost:8000",
+    "https://chatarena.xyz",
+    "https://www.chatarena.xyz",
 ]

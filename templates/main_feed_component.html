@@ -15,11 +15,13 @@
             <p class="room-desc">"{{room.description|truncatechars:200 }}"</p>
             <span class="master-host-span"><span class="host-span">Host</span> <a href="{% url "user-profile" room.host.id %}" class="user-name">{{ room.host.username }}</a></span>
             
-            <div style="margin-top: 8px;">
+            <div>
                 <span class="topics">Topics </span>
+                <div class="topic-list-container">
                 {% for topic in room.topics.all  %}
                 <span class="topic-component">{{topic}}</span>
                 {% endfor %}
+                </div>
             </div>
         
         <p><small>Updated on - {{ room.updated }}</small></p>

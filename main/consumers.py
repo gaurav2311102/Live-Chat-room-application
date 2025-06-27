@@ -1,11 +1,9 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.exceptions import StopConsumer
 from asgiref.sync import sync_to_async
-
 import json
 from django.utils.timesince import timesince
 import re
-
 
 
 class ChatConsumer(AsyncWebsocketConsumer):

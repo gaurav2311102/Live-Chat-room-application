@@ -1,49 +1,49 @@
 {% include "base.html" %}
-
+{% load static %}
 {% block content %}
 
+{% if request.user.is_authenticated and request.user == user %}
+<div class="profile-container">
 
+    <div class="mobile-nav">
+        <button id="show-profile" class="toggle-btn active">Profile</button>
+        <button id="show-activity" class="toggle-btn">Activity</button>
+    </div>
 
-    {% if request.user.is_authenticated and request.user == user  %}
-        <div class="profile-container">
-            <aside class = 'left-sidebar'>
-                {% include "topics_component.html" %}
-            </aside>
+    <main class='main-feed-profile'>
 
-            <main class = 'main-feed'>
+        <div class="profile-detail-container">
+            <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="profile-pic">
+            <h6>{{user.username|capfirst}}</h6>
+        </div>
+        <hr>
+        <h3 style="color:blue; margin-left:10px">Joined Rooms</h3>
+        {% include "main_feed_component.html" %}
 
-                <div class="profile-detail-container">
-                <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture"  class="profile-pic">
-                <h6>{{user.username|capfirst}}</h6>
-                </div>
-                {% include "main_feed_component.html" %}
-            </main>
+    </main>
 
-            <aside class = "right_sidebar">
-                {% include "activity_component.html" %}
-            </aside>
+    <aside class="right-sidebar-profile">
+        {% include "activity_component.html" %}
+    </aside>
+</div>
+
+{% elif request.user.is_authenticated and request.user != user %}
+<div class="profile-container-other">
+
+    <main class='profile-for-other'>
+        <div class="profile-detail-container">
+            <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="profile-pic">
+            <h6>{{user.username|capfirst}}</h6>
         </div>
 
-    {% elif request.user.is_authenticated and request.user != user %}
-        <div class="profile-container">
-            <aside class = 'left-sidebar'>
-                {% include "topics_component.html" %}
-            </aside>
+    </main>
+</div>
 
-            <main class = 'main-feed'>
-                <div class="profile-detail-container">
-                <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture"  class="profile-pic">
-                <h6>{{user.username|capfirst}}</h6>
-                </div>
-                {% include "main_feed_component.html" %}
-            </main>
-        </div>
+{% else %}
+<div style="display:flex; justify-content:center;">
+    <p style="font-size: x-large;"><a href={% url "login" %}>Login </a>to see details</p>
+</div>
+{% endif %}
 
-    {% else %}
-        <div style="display:flex; justify-content:center;">
-        <p style="font-size: x-large;"><a href={% url "login" %}>Login </a>to see details</p>
-        </div>
-    {% endif %}
-
+<script src="{% static 'js/profile.js' %}"></script>
 {% endblock content %}
-

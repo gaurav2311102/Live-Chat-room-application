@@ -2,15 +2,15 @@
 {% load static %}
 {% block content %}
 
-<div class='room_container'>
+<div class='room-container'>
     <main>
-        <div style="display:  flex; justify-content: space-between; align-items: center;">
+        <div class = "room-top">
 
-            <p>
-                <span style="font-size:50px; font-weight:bold; margin-right:10px;">{{room.name}}</span>
+            <p class="room-title">
+                <span class="room-title" >{{room.name}}</span>
                 {% if request.user == room.host %}
 
-                    <span style="font-size:30px;" >
+                    <span class="room-title-edit" >
                         <a href="{% url "update-room" room.id %}"><i class="bi bi-pencil"></i></a>
                         <a href="{% url 'delete-room' room.id %}" class="delete-icon"><i class="bi bi-trash"></i></i></a>
                     </span>
@@ -22,7 +22,7 @@
 
                 {% endif %}
             </p>
-            <span >
+            <span class="join-leave-button">
                 {% if user.is_authenticated %}
                     {% if is_member %}
 
@@ -47,7 +47,17 @@
         
         <p style="margin-botton:2px;"><b>HOSTED BY - </b><a href="{% url "user-profile" room.host.id %}">@{{room.host}}</a></p>
       
-        <p class="room-desc"><b>"</b>{{room.description}}<b>"</b></p>
+        {% with room.description|wordcount as word_count %}
+            {% if word_count > 25 %}
+                <p class="room-desc">
+                    {{ room.description|truncatewords:25 }}...
+                    <a href="#" onclick="openModal()" id="view-more-btn">View More</a>
+                </p>
+            {% else %}
+                <p class="room-desc">{{ room.description }}</p>
+            {% endif %}
+        {% endwith %}
+
 
         <hr>
         {% if user.is_authenticated %}
@@ -59,18 +69,15 @@
                         
 
                     </div>
-
-                    <div class="message-container-bottom">
-
                         
-                        <form  id = "message-form">
+                        <form  id="message-form" class="message-container-bottom" >
                         
                             {% csrf_token %}
                             
                             <input type="text" name='text' placeholder='Send message' required='True' class="message-input" id="message-input" autocomplete="off" />
                             <button type ='submit' class="message-send-button">Send</button>
                         </form>
-                    </div>
+                    
 
                 </div>
                 
@@ -85,16 +92,29 @@
 
     </main> 
 
-    <aside class="paricipants-container">
-        
-        <h4>Participants (<small>{{participant_count}}</small>)</h4> 
-        <ul>
-            {% for participant in room.participants.all  %}
-            <li><a href="{% url "user-profile" participant.id %}">{{participant.username}}</a></li>
-            {% endfor %}
-         </ul>
+    <aside class="participants-container">
+        <h4 class="participant-heading">Participants (<small>{{participant_count}}</small>)</h4> 
+
+        <div class="participants-scroll-wrapper">
+            <ul class="participants-list">
+                {% for participant in room.participants.all %}
+                <div class="li-wrapper">  
+                    <li><a href="{% url "user-profile" participant.id %}">{{participant.username}}</a></li>
+                </div>
+                {% endfor %}
+            </ul>
+        </div>
     </aside>
 
+
+</div>
+
+<div id="descriptionModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3>Full Description</h3>
+        <p>{{ room.description }}</p>
+    </div>
 </div>
 
 {{room.name|json_script:'room-name'}}
@@ -104,6 +124,7 @@
 {% if is_member %}
 <script src="{% static 'js/script.js' %}"></script>
 {% endif %}
+<script src="{% static "js/room_desc.js" %}"></script>
 
 {% endblock content %}
 

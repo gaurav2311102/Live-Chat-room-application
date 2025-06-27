@@ -7,20 +7,20 @@
 </head>
 <body>
     <div class="topic-container">
-    <h4 class='headings'>Browse Topics</h4>
-        <hr>
+        <h4 class="headings">Browse Topics</h4>
         <div class="topic-list">
             <div class="topic-box">
-                <a href="{% url "home" %}"  > <b>All</b></a>
+                <a href="{% url 'home' %}"><b>All</b></a>
             </div>
-        </div>
-        <div class="topic-list">
-        {% for topic in topics  %}
-            <div class="topic-box" >
-                <a href="{% url "home" %}?q={{topic.name}} " ><b>{{topic.name}}</b></a>
+
+            {% for topic in topics %}
+                <div class="topic-box {% if request.GET.q == topic.name %}active{% endif %}">
+                <a href="{% url 'home' %}?q={{ topic.name }}"><b>{{ topic.name }}</b></a>
+                </div>
+            {% endfor %}
             </div>
-        {% endfor %}
-        </div>
+
     </div>
+    
 </body>
 </html>

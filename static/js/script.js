@@ -24,7 +24,6 @@ ws.onmessage = function (event) {
     console.log("type of data : ", data.type);
 
 
-
     if (data.type === 'message_add') {
 
         var is_Admin = data['is_Admin']
@@ -40,11 +39,6 @@ ws.onmessage = function (event) {
             messagebox.id = `message-${data.msg_id}`;
         }
 
-        // var messageContent = document.createElement("div");
-        // messageContent.classList.add("message-content");
-
-        var messageLine = document.createElement("span")
-        messageLine.classList.add("message-line")
 
         var messageSpan = document.createElement("span");
 
@@ -110,13 +104,11 @@ ws.onmessage = function (event) {
             }
         }
 
-        messageLine.appendChild(messageSpan);
-        messageLine.appendChild(timescince);
-
         modifydivcontainer.appendChild(modifyDiv)
         messagebox.appendChild(modifydivcontainer);
         messagebox.appendChild(userSmall);
-        messagebox.appendChild(messageLine);
+        messagebox.appendChild(messageSpan);
+        messagebox.appendChild(timescince);
 
 
 
@@ -216,3 +208,4 @@ function editMessage(messageId, currentText) {
         }));
     }
 }
+

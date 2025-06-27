@@ -7,8 +7,10 @@
 </head>
 <body>
     <div class='activity-container'>
-    <h4 class="headings">Your activities</h4>
+    <div class="sticky-header">
+        <h4 class="headings">Your activities</h4>
         <hr>
+    </div>
         {% for message in chat_messages  %}
         <div class="activity-box">
             <div class="activity-box-option">
